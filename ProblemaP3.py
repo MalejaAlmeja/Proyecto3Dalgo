@@ -56,12 +56,11 @@ def mutate(individual):
             else:
                 individual[idx] = subcadena[:-1]
 
-"""def fitness(individual, data):
-    return 0 """
+def fitness(individual, data):
+    return random.randint(1, 100)
 
 def roulette_selection(population):
-    
-    max_fitness = max(individual.fitness for individual in population)#esto para cuando ya tengamos el fitness
+    max_fitness = max(individual.fitness for individual in population)
     adjusted_fitnesses = [(max_fitness - individual.fitness + 1) for individual in population]
     total_fitness = sum(adjusted_fitnesses)
 
