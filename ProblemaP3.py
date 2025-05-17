@@ -59,13 +59,12 @@ def main():
     ncasos = int(linea)
     for i in range(ncasos):
         subcadenas = []
-        linea = sys.stdin.readline()
-        n = int(linea.split(" ")[0])
-        k = int(linea.split(" ")[1])
-        for j in range(n):
+        linea = sys.stdin.readline().strip()
+        n,k= linea.split(" ")
+        for j in range(int(n)):
             linea = sys.stdin.readline()
             subcadenas.append(linea)
-        rta = texto_minimo_reconstruible(n,k,subcadenas)
+        rta = texto_minimo_reconstruible(int(n),int(k),subcadenas)
         print(rta)
 
 main()
