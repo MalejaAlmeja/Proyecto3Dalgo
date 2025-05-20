@@ -75,20 +75,37 @@ def mutate(individual):
             individual[2][idx] = random.randint(individual[1][idx],LONGITUD)
 
 def fitness(individual, data):
+    missed = 0
+    repetidos = 0
+    cuentas = {}
+    cadena_reconstruida = ''
     for i in range(NUMERO):
-        missed = 0
-        cadena_reconstruida = ''
         if individual[0][i] != 0:
             inicio=individual[1][i]
             fin=individual[2][i]
             subcadena=SUBCADENAS[individual[0][i] - 1]
             subcadena=subcadena[inicio:fin+1]
             cadena_reconstruida+=subcadena
-    for i in SUBCADENAS:
-        if i not in cadena_reconstruida:
-            missed+=1
 
-    return missed
+    for i in SUBCADENAS:
+        cuentas[i]=0
+        for j in range(0,len(cadena_reconstruida) - LONGITUD + 1):
+            sujeto=cadena_reconstruida[j:j+3]
+            if sujeto == i:
+                cuentas[i]+=1
+    
+    for elem in cuentas:
+        if cuentas[elem] == 0:
+            missed+=1
+        if cuentas[elem] > 1:
+            repetidos+=1
+    print(cuentas)
+    print(cadena_reconstruida)
+    print(individual)
+    if missed==0 and repetidos==0:
+        return 0
+    else:
+        return missed+repetidos
 
 def roulette_selection(population):
     fitness_reciproco =[]
@@ -126,9 +143,9 @@ for _ in range(ncasos):
     print(rta[0])
 '''
 
-SUBCADENAS = ['aab','baa','aaa','bbb']
-NUMERO = 4
-LONGITUD = 3
+SUBCADENAS = ['nfid','conf','cial','denc','onfi','enci']
+NUMERO = 6
+LONGITUD = 4
 rta = texto_minimo_reconstruible(NUMERO, LONGITUD, SUBCADENAS)
 matriz_rta= rta[0]
 texto=''
