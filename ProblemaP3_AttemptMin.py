@@ -22,7 +22,6 @@ def texto_minimo_reconstruible(n: int, k: int, subcadenas: list):
     ga.mutate_function = mutate
     ga.selection_function = roulette_selection  
     ga.fitness_function = fitness  # pendiente 
-
     ga.run()
 
     best_fitness = ga.best_individual()[0]
@@ -30,43 +29,45 @@ def texto_minimo_reconstruible(n: int, k: int, subcadenas: list):
     return text, best_fitness
 
 def create_individual(data):
-    numero_subs = random.randint(1,NUMERO)
-    random.shuffle(data[0])
+    genes = [
+        data[0][:],  
+        data[1][:], 
+        data[2][:]  
+    ]
+
+    numero_subs = random.randint(1, NUMERO)
+    random.shuffle(genes[0])
+
     for i in range(NUMERO):
-        if i >= NUMERO-numero_subs: #No va a estar en el rango de aquellos que no serán tomados en cuenta
-            inicio = random.randint(0,LONGITUD)
-            fin = random.randint(inicio,LONGITUD)
-            data[1][i]=inicio
-            data[2][i]=fin
+        if i >= NUMERO - numero_subs:
+            inicio = random.randint(0, LONGITUD)
+            fin = random.randint(inicio, LONGITUD)
+            genes[1][i] = inicio
+            genes[2][i] = fin
         else:
-            data[0][i]=0
-    return data
+            genes[0][i] = 0 
+    return genes
 
 def crossover(parent_1, parent_2):
     cut = random.randint(1, NUMERO - 1)
-    child1 =[ [ parent_1[0][:cut] + parent_2[0][cut:] ],
-              [ parent_1[1][:cut] + parent_2[1][cut:] ],
-              [ parent_1[2][:cut] + parent_2[2][cut:] ] ]
-    child2 =[ [ parent_2[0][:cut] + parent_1[0][cut:] ],
-              [ parent_2[1][:cut] + parent_1[1][cut:] ],
-              [ parent_2[2][:cut] + parent_1[2][cut:] ] ]
+    child1 =[  parent_1[0][:cut] + parent_2[0][cut:],
+              parent_1[1][:cut] + parent_2[1][cut:],
+              parent_1[2][:cut] + parent_2[2][cut:] ]
+    child2 =[ parent_2[0][:cut] + parent_1[0][cut:],
+              parent_2[1][:cut] + parent_1[1][cut:],
+              parent_2[2][:cut] + parent_1[2][cut:]]
     return child1, child2
 
 def mutate(individual):
     mutation_type = random.choice(["swap", "extreme_edit"])
 
     if mutation_type == "swap":
-        idx1, idx2 = random.sample(range(NUMERO), 2)
-        print(idx1, idx2)
-        print(len(individual[0]),len(individual[1]),len(individual[2]))
-        #mirar que pasa por qué se están camibando los tamaños de las listas!
+        idx1, idx2 = random.sample(range(0,NUMERO), 2)
         individual[0][idx1], individual[0][idx2] = individual[0][idx2], individual[0][idx1]
         individual[1][idx1], individual[1][idx2] = individual[1][idx2], individual[1][idx1]
         individual[2][idx1], individual[2][idx2] = individual[2][idx2], individual[2][idx1]
     else:
         idx = random.randint(0, NUMERO-1)
-        print(idx)
-        print(len(individual[0]),len(individual[1]),len(individual[2]))
         action = random.choice(["cambiar_inicio", "cambiar_fin"])
         if action == "cambiar_inicio":
             individual[1][idx] = random.randint(0,individual[2][idx])
@@ -80,7 +81,9 @@ def fitness(individual, data):
         if individual[0][i] != 0:
             inicio=individual[1][i]
             fin=individual[2][i]
-            cadena_reconstruida+=SUBCADENAS[individual[i]-1][inicio:fin+1]
+            subcadena=SUBCADENAS[individual[0][i] - 1]
+            subcadena=subcadena[inicio:fin+1]
+            cadena_reconstruida+=subcadena
     for i in SUBCADENAS:
         if i not in cadena_reconstruida:
             missed+=1
@@ -127,4 +130,11 @@ SUBCADENAS = ['aab','baa','aaa','bbb']
 NUMERO = 4
 LONGITUD = 3
 rta = texto_minimo_reconstruible(NUMERO, LONGITUD, SUBCADENAS)
-print(rta[0])
+matriz_rta= rta[0]
+texto=''
+for elem in matriz_rta[0]:
+    if elem!=0:
+        texto+=SUBCADENAS[elem-1][matriz_rta[1][elem-1]:matriz_rta[2][elem-1]+1]
+print('matriz solucion',rta[0])
+print('fitness:',rta[1])
+print(texto)
