@@ -8,10 +8,10 @@ import random
 from pyeasyga import pyeasyga
 
 def texto_minimo_reconstruible(n: int, k: int, subcadenas: list):
-    matrix = [[i for i in range(1,n+1)],[0 for i in range(n)],[k-1 for i in range(n)]]
+    matrix = [[i for i in range(1,n+1)],[0 for i in range(n)],[(k-1) for i in range(n)]]
     ga = pyeasyga.GeneticAlgorithm(matrix,
-                                   population_size=50,
-                                   generations=100,
+                                   population_size=100,
+                                   generations=500,
                                    crossover_probability=0.8,
                                    mutation_probability=0.2,
                                    elitism=True,
@@ -35,13 +35,13 @@ def create_individual(data):
         data[2][:]  
     ]
 
-    numero_subs = random.randint(1, NUMERO)
+    numero_subs = random.randint(0, NUMERO)
     random.shuffle(genes[0])
 
     for i in range(NUMERO):
         if i >= NUMERO - numero_subs:
-            inicio = random.randint(0, LONGITUD)
-            fin = random.randint(inicio, LONGITUD)
+            inicio = random.randint(0, LONGITUD-1)
+            fin = random.randint(inicio, LONGITUD-1)
             genes[1][i] = inicio
             genes[2][i] = fin
         else:
@@ -66,30 +66,20 @@ def mutate(individual):
         individual[0][idx1], individual[0][idx2] = individual[0][idx2], individual[0][idx1]
         individual[1][idx1], individual[1][idx2] = individual[1][idx2], individual[1][idx1]
         individual[2][idx1], individual[2][idx2] = individual[2][idx2], individual[2][idx1]
-    else:
+    elif mutation_type == "extreme_edit":
         idx = random.randint(0, NUMERO-1)
         action = random.choice(["cambiar_inicio", "cambiar_fin"])
         if action == "cambiar_inicio":
             individual[1][idx] = random.randint(0,individual[2][idx])
         else:
-            individual[2][idx] = random.randint(individual[1][idx],LONGITUD)
+            individual[2][idx] = random.randint(individual[1][idx],LONGITUD-1)
 
-def calcular_minimo_teorico(subcadenas):
-    total = sum(len(s) for s in subcadenas)
-    max_overlap = 0
-    for i in range(len(subcadenas)):
-        for j in range(len(subcadenas)):
-            if i != j:
-                a, b = subcadenas[i], subcadenas[j]
-                for k in range(1, min(len(a), len(b))):
-                    if a[-k:] == b[:k]:
-                        max_overlap = max(max_overlap, k)
-    return total - max_overlap
 
 
 def fitness(individual, data):
     missed = 0
     repetidos = 0
+    adicional = 0
     cuentas = {}
     cadena_reconstruida = ''
     for i in range(NUMERO):
@@ -104,8 +94,12 @@ def fitness(individual, data):
         cuentas[i]=0
         for j in range(0,len(cadena_reconstruida) - LONGITUD + 1):
             sujeto=cadena_reconstruida[j:j+3]
+            if sujeto not in SUBCADENAS:
+                    adicional+=1
             if sujeto == i:
                 cuentas[i]+=1
+
+    adicional/=NUMERO    
     
     for elem in cuentas:
         if cuentas[elem] == 0:
@@ -113,16 +107,21 @@ def fitness(individual, data):
         if cuentas[elem] > 1:
             repetidos+=1
 
-    minimo_necesario = calcular_minimo_teorico(SUBCADENAS)
-    exceso=0
-    if len(cadena_reconstruida) > minimo_necesario:
-        exceso =  len(cadena_reconstruida) - minimo_necesario
+    maximo_cadenas_teoricas_adicionales = len(cadena_reconstruida)-(LONGITUD-1)-NUMERO
+    exceso = adicional - maximo_cadenas_teoricas_adicionales
 
-    print(cuentas)
-    print(cadena_reconstruida)
-    print(individual)
-    
-    return missed+repetidos+exceso
+    print('Cuentas:',cuentas)
+    print('Adicionales:',exceso)
+    print('Cadena:',cadena_reconstruida)
+    print('Individuo:', individual)
+    if missed > 0:
+        return missed + 100
+    elif repetidos > 0:
+        return repetidos + 50
+    elif exceso > 0:
+        return exceso
+    else:
+        return 0
 
 def roulette_selection(population):
     fitness_reciproco =[]
