@@ -74,6 +74,19 @@ def mutate(individual):
         else:
             individual[2][idx] = random.randint(individual[1][idx],LONGITUD)
 
+def calcular_minimo_teorico(subcadenas):
+    total = sum(len(s) for s in subcadenas)
+    max_overlap = 0
+    for i in range(len(subcadenas)):
+        for j in range(len(subcadenas)):
+            if i != j:
+                a, b = subcadenas[i], subcadenas[j]
+                for k in range(1, min(len(a), len(b))):
+                    if a[-k:] == b[:k]:
+                        max_overlap = max(max_overlap, k)
+    return total - max_overlap
+
+
 def fitness(individual, data):
     missed = 0
     repetidos = 0
@@ -99,13 +112,17 @@ def fitness(individual, data):
             missed+=1
         if cuentas[elem] > 1:
             repetidos+=1
+
+    minimo_necesario = calcular_minimo_teorico(SUBCADENAS)
+    exceso=0
+    if len(cadena_reconstruida) > minimo_necesario:
+        exceso =  len(cadena_reconstruida) - minimo_necesario
+
     print(cuentas)
     print(cadena_reconstruida)
     print(individual)
-    if missed==0 and repetidos==0:
-        return 0
-    else:
-        return missed+repetidos
+    
+    return missed+repetidos+exceso
 
 def roulette_selection(population):
     fitness_reciproco =[]
