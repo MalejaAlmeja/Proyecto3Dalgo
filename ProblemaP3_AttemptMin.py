@@ -127,7 +127,7 @@ def fitness(individual, data):
     elif adicional > 0:
         return adicional
     else:
-        return 0
+        return len(cadena_reconstruida)  # Premia la cadena perfecta más corta
    
 
 def roulette_selection(population):
