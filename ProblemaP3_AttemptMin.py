@@ -11,7 +11,7 @@ def texto_minimo_reconstruible(n: int, k: int, subcadenas: list):
     matrix = [[i for i in range(1,n+1)],[0 for i in range(n)],[(k-1) for i in range(n)]]
     ga = pyeasyga.GeneticAlgorithm(matrix,
                                    population_size=100,
-                                   generations=500,
+                                   generations=300,
                                    crossover_probability=0.8,
                                    mutation_probability=0.2,
                                    elitism=True,
@@ -72,7 +72,7 @@ def mutate(individual):
         if action == "cambiar_inicio":
             individual[1][idx] = random.randint(0,individual[2][idx])
         else:
-            individual[2][idx] = random.randint(individual[1][idx],LONGITUD-1)
+            individual[2][idx] = random.randint(individual[1][idx],LONGITUD)
 
 
 
