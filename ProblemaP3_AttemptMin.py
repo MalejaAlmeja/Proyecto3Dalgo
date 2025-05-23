@@ -39,7 +39,7 @@ def create_individual(data):
     random.shuffle(genes[0])
 
     for i in range(NUMERO):
-        if i >= NUMERO - numero_subs:
+        if i >= (NUMERO - numero_subs):
             inicio = random.randint(0, LONGITUD-1)
             fin = random.randint(inicio, LONGITUD-1)
             genes[1][i] = inicio
@@ -50,7 +50,7 @@ def create_individual(data):
 
 def crossover(parent_1, parent_2):
     cut = random.randint(1, NUMERO - 1)
-    child1 =[  parent_1[0][:cut] + parent_2[0][cut:],
+    child1 =[ parent_1[0][:cut] + parent_2[0][cut:],
               parent_1[1][:cut] + parent_2[1][cut:],
               parent_1[2][:cut] + parent_2[2][cut:] ]
     child2 =[ parent_2[0][:cut] + parent_1[0][cut:],
@@ -72,7 +72,7 @@ def mutate(individual):
         if action == "cambiar_inicio":
             individual[1][idx] = random.randint(0,individual[2][idx])
         else:
-            individual[2][idx] = random.randint(individual[1][idx],LONGITUD)
+            individual[2][idx] = random.randint(individual[1][idx],LONGITUD-1)
 
 
 
@@ -80,6 +80,7 @@ def fitness(individual, data):
     missed = 0
     repetidos = 0
     adicional = 0
+    adicionales=[]
     cuentas = {}
     cadena_reconstruida = ''
     for i in range(NUMERO):
@@ -93,13 +94,15 @@ def fitness(individual, data):
     for i in SUBCADENAS:
         cuentas[i]=0
         for j in range(0,len(cadena_reconstruida) - LONGITUD + 1):
-            sujeto=cadena_reconstruida[j:j+3]
-            if sujeto not in SUBCADENAS:
-                    adicional+=1
+            sujeto=cadena_reconstruida[j:j+LONGITUD]
             if sujeto == i:
                 cuentas[i]+=1
 
-    adicional/=NUMERO    
+    for j in range(0,len(cadena_reconstruida) - LONGITUD + 1):
+            sujeto=cadena_reconstruida[j:j+LONGITUD]
+            if sujeto not in SUBCADENAS:
+                    adicionales.append(sujeto)
+                    adicional+=1
     
     for elem in cuentas:
         if cuentas[elem] == 0:
@@ -111,17 +114,21 @@ def fitness(individual, data):
     exceso = adicional - maximo_cadenas_teoricas_adicionales
 
     print('Cuentas:',cuentas)
-    print('Adicionales:',exceso)
+    print('Adicional: ',adicional)
+    print('Adicionales: ',adicionales)
+    print('Exceso:',exceso)
     print('Cadena:',cadena_reconstruida)
     print('Individuo:', individual)
+
     if missed > 0:
-        return missed + 100
+        return missed + 200
     elif repetidos > 0:
         return repetidos + 50
-    elif exceso > 0:
-        return exceso
+    elif adicional > 0:
+        return adicional
     else:
         return 0
+   
 
 def roulette_selection(population):
     fitness_reciproco =[]
