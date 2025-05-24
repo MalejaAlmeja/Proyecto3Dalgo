@@ -6,7 +6,64 @@
 import sys
 import random
 from pyeasyga import pyeasyga
+import matplotlib.pyplot as plt
 
+def datos_generacion(bestFitnessHist, avgFitnessHist, ga):
+    fitness_po = [i.fitness for i in ga.current_generation]
+    average = sum(fitness_po)/len(fitness_po)
+    print("Fitness promedio:{} ".format(average))
+    print("Mejor Individuo: {}".format(ga.best_individual()))
+    bestFitnessHist.append(ga.best_individual()[0])
+    avgFitnessHist.append(average)
+    
+    return (bestFitnessHist,avgFitnessHist)
+
+def graficos(ga):
+     
+    bestFitnessHist=[]
+    avgFitnessHist=[]
+
+    for i in range(1, 101):
+        print("Generacion #{}".format(i))
+        ga.create_next_generation()
+        info=datos_generacion(bestFitnessHist, avgFitnessHist, ga)
+        bestFitnessHist=info[0]
+        avgFitnessHist=info[1]
+        
+        
+    generations = list(range(len(avgFitnessHist)))
+    
+    matriz_rta=  ga.best_individual()[1]
+    texto=''
+    for elem in matriz_rta[0]:
+        if elem!=0:
+            texto+=SUBCADENAS[elem-1][matriz_rta[1][elem-1]:matriz_rta[2][elem-1]+1]
+    print('matriz solucion', ga.best_individual()[0])
+    print('fitness:',ga.best_individual()[1])
+    print(texto)
+
+    plt.figure(figsize=(12, 5))
+
+    # Promedio
+    plt.subplot(1, 2, 1)
+    plt.plot(generations, avgFitnessHist, label='Average Fitness', color='blue')
+    plt.xlabel("Generación")
+    plt.ylabel("Fitness Promedio")
+    plt.title(f"Fitness Promedio por Generación")
+    plt.grid(True)
+
+    # Mejor fitness
+    plt.subplot(1, 2, 2)
+    plt.plot(generations, bestFitnessHist, label='Best Fitness', color='green')
+    plt.xlabel("Generación")
+    plt.ylabel("Fitness del Mejor Individuo")
+    plt.title(f"Mejor Fitness por Generación")
+    plt.grid(True)
+
+    plt.tight_layout()
+    plt.show()
+    
+    
 def texto_minimo_reconstruible(n: int, k: int, subcadenas: list):
     matrix = [[i for i in range(1,n+1)],[0 for i in range(n)],[k-1 for i in range(n)]]
     ga = pyeasyga.GeneticAlgorithm(matrix,
@@ -23,6 +80,8 @@ def texto_minimo_reconstruible(n: int, k: int, subcadenas: list):
     ga.selection_function = roulette_selection  
     ga.fitness_function = fitness  # pendiente 
     ga.run()
+    
+    graficos(ga)
 
     best_fitness = ga.best_individual()[0]
     text = ga.best_individual()[1]

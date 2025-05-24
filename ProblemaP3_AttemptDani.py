@@ -34,13 +34,16 @@ def graficos(ga):
         
     generations = list(range(len(avgFitnessHist)))
     
-    matriz_rta=  ga.best_individual()[1]
+    bestInd=ga.best_individual()
+    matriz_rta= bestInd[1]
     texto=''
     for elem in matriz_rta[0]:
         if elem!=0:
             texto+=SUBCADENAS[elem-1][matriz_rta[1][elem-1]:matriz_rta[2][elem-1]+1]
-    print('matriz solucion', ga.best_individual()[0])
-    print('fitness:',ga.best_individual()[1])
+    
+    print("\n")
+    print('matriz solucion', matriz_rta)
+    print('fitness:', bestInd[0])
     print(texto)
 
     plt.figure(figsize=(12, 5))
@@ -69,8 +72,8 @@ def graficos(ga):
 def texto_minimo_reconstruible(n: int, k: int, subcadenas: list):
     matrix = [[i for i in range(1,n+1)],[0 for i in range(n)],[k-1 for i in range(n)]]
     ga = pyeasyga.GeneticAlgorithm(matrix,
-                                   population_size=100,
-                                   generations=300,
+                                   population_size=50,
+                                   generations=100,
                                    crossover_probability=0.8,
                                    mutation_probability=0.2,
                                    elitism=True,
@@ -137,28 +140,40 @@ def mutate(individual):
             individual[2][idx] = random.randint(individual[1][idx],LONGITUD)
 
 def fitness(individual, data):
-    numChars=0
     
+    missed = 0
+    repetidos = 0
+    cuentas = {}
+    cadena_reconstruida = ''
+    
+    #Reconstruir la cadena
     for i in range(NUMERO):
-        missed = 0
-        cadena_reconstruida = ''
         if individual[0][i] != 0:
             inicio=individual[1][i]
             fin=individual[2][i]
             subcadena=SUBCADENAS[individual[0][i] - 1]
             subcadena=subcadena[inicio:fin+1]
             cadena_reconstruida+=subcadena
-            numChars+=len(subcadena)
-            
+
+    #Contamos cuantas veces aparece una subcadena
     for i in SUBCADENAS:
-        if i not in cadena_reconstruida:
-            missed+=1
+        cuentas[i]=0
+        for j in range(0,len(cadena_reconstruida) - LONGITUD + 1):
+            sujeto=cadena_reconstruida[j:j+3]
+            if sujeto == i:
+                cuentas[i]+=1
     
-    if missed==0:
-        return numChars
-    else: 
-        fit=(NUMERO*LONGITUD)+missed
-        return fit
+    #Miramos repetidos y faltantes
+    for elem in cuentas:
+        if cuentas[elem] == 0:
+            missed+=1
+        if cuentas[elem] > 1:
+            repetidos+=1
+            
+    if missed==0 and repetidos==0:
+        return len(cadena_reconstruida)
+    else:
+        return (NUMERO*LONGITUD)+missed+repetidos
 
 def roulette_selection(population):
     """
@@ -236,8 +251,8 @@ texto=''
 for elem in matriz_rta[0]:
     if elem!=0:
         texto+=SUBCADENAS[elem-1][matriz_rta[1][elem-1]:matriz_rta[2][elem-1]+1]
-print('matriz solucion',rta[0])
-print('fitness:',rta[1])
-print(texto)
+#print('matriz solucion',rta[0])
+#print('fitness:',rta[1])
+#print(texto)
 
 
