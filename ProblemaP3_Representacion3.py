@@ -69,45 +69,30 @@ def fitness(individual, data):
 
             cadena_reconstruida+=letras_adicionales
 
-    #Se verifica cuántas veces se repiten las cadenas de entrada
-    for i in SUBCADENAS:
+    for i in range(1, NUMERO+1):
         cuentas[i]=0
-        for j in range(0,len(cadena_reconstruida) - LONGITUD + 1):
-            sujeto=cadena_reconstruida[j:j+LONGITUD]
-            if sujeto == i:
-                cuentas[i]+=1
-    #Se verifica cuántas subcadenas de tamaño k hay en la solución que no estén dentro del arreglo de subcadenas
-    for j in range(0,len(cadena_reconstruida) - LONGITUD + 1):
-            sujeto=cadena_reconstruida[j:j+LONGITUD]
-            if sujeto not in SUBCADENAS:
-                    adicionales.append(sujeto)
-                    adicional+=1
-    
+    for i in individual:
+        cuentas[i]+=1
+
+
     for elem in cuentas:
         if cuentas[elem] == 0:
             missed+=1
         if cuentas[elem] > 1:
-            repetidos+=1
+            repetidos+=cuentas[elem]
 
-    maximo_cadenas_teoricas_adicionales = len(cadena_reconstruida)-(LONGITUD-1)-NUMERO
-    exceso = adicional - maximo_cadenas_teoricas_adicionales
-
-    print('Cuentas:',cuentas)
-    print('Adicional: ',adicional)
-    print('Adicionales: ',adicionales)
-    print('Exceso:',exceso)
     print('Cadena:',cadena_reconstruida)
     print('Individuo:', individual)
+    print('Cuentas:', cuentas)
+    global minima_longitud_texto
+    print('Minimo: ', minima_longitud_texto)
 
-    if missed > 0:
-        return missed + 200
-    elif repetidos > 0:
-        return repetidos + 50
-    #comento lo de adicionales porque no estoy segura
-    #elif adicional > 0:
-        #return adicional
-    else:
-        return len(cadena_reconstruida)  # Premia la cadena perfecta más corta
+    if missed > 0 or repetidos > 0:
+        return missed + 100 + len(cadena_reconstruida)
+    elif len(cadena_reconstruida) < minima_longitud_texto:
+        minima_longitud_texto = len(cadena_reconstruida)
+        print('Nuevo minimo: ', minima_longitud_texto)
+    return len(cadena_reconstruida)
    
 
 def roulette_selection(population):
@@ -155,6 +140,7 @@ for sub in SUBCADENAS:
         letras.add(letra)
 LETRAS = list(letras)
 
+minima_longitud_texto=NUMERO*LONGITUD
 rta = texto_minimo_reconstruible(NUMERO, LONGITUD, SUBCADENAS)
 individual= rta[0]
 texto=''
