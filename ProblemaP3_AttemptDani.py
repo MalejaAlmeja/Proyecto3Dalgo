@@ -24,7 +24,7 @@ def graficos(ga):
     bestFitnessHist=[]
     avgFitnessHist=[]
 
-    for i in range(1, 101):
+    for i in range(1, 500):
         print("Generacion #{}".format(i))
         ga.create_next_generation()
         info=datos_generacion(bestFitnessHist, avgFitnessHist, ga)
@@ -37,10 +37,14 @@ def graficos(ga):
     bestInd=ga.best_individual()
     matriz_rta= bestInd[1]
     texto=''
-    for elem in matriz_rta[0]:
-        if elem!=0:
-            texto+=SUBCADENAS[elem-1][matriz_rta[1][elem-1]:matriz_rta[2][elem-1]+1]
-    
+    for i in range(NUMERO):
+        if matriz_rta[0][i] != 0:
+            inicio=matriz_rta[1][i]
+            fin=matriz_rta[2][i]
+            subcadena=SUBCADENAS[matriz_rta[0][i] - 1]
+            subcadena=subcadena[inicio:fin]
+            texto+=subcadena
+            
     print("\n")
     print('matriz solucion', matriz_rta)
     print('fitness:', bestInd[0])
@@ -75,7 +79,7 @@ def texto_minimo_reconstruible(n: int, k: int, subcadenas: list):
                                    population_size=50,
                                    generations=100,
                                    crossover_probability=0.8,
-                                   mutation_probability=0.2,
+                                   mutation_probability=0.1,
                                    elitism=True,
                                    maximise_fitness=False)
 
@@ -152,7 +156,7 @@ def fitness(individual, data):
             inicio=individual[1][i]
             fin=individual[2][i]
             subcadena=SUBCADENAS[individual[0][i] - 1]
-            subcadena=subcadena[inicio:fin+1]
+            subcadena=subcadena[inicio:fin]
             cadena_reconstruida+=subcadena
 
     #Contamos cuantas veces aparece una subcadena
@@ -170,10 +174,68 @@ def fitness(individual, data):
         if cuentas[elem] > 1:
             repetidos+=1
             
-    if missed==0 and repetidos==0:
-        return len(cadena_reconstruida)
+    if missed > 0:
+        return (missed*10) + 200
+    elif repetidos > 0:
+        return (repetidos*10) + 50
     else:
-        return (NUMERO*LONGITUD)+missed+repetidos
+        return len(cadena_reconstruida)  # Premia la cadena perfecta más corta
+    
+    """
+        missed = 0
+    repetidos = 0
+    adicional = 0
+    adicionales=[]
+    cuentas = {}
+    cadena_reconstruida = ''
+    for i in range(NUMERO):
+        if individual[0][i] != 0:
+            inicio=individual[1][i]
+            fin=individual[2][i]
+            subcadena=SUBCADENAS[individual[0][i] - 1]
+            subcadena=subcadena[inicio:fin+1]
+            cadena_reconstruida+=subcadena
+
+    for i in SUBCADENAS:
+        cuentas[i]=0
+        for j in range(0,len(cadena_reconstruida) - LONGITUD + 1):
+            sujeto=cadena_reconstruida[j:j+LONGITUD]
+            if sujeto == i:
+                cuentas[i]+=1
+
+    for j in range(0,len(cadena_reconstruida) - LONGITUD + 1):
+            sujeto=cadena_reconstruida[j:j+LONGITUD]
+            if sujeto not in SUBCADENAS:
+                    adicionales.append(sujeto)
+                    adicional+=1
+    
+    for elem in cuentas:
+        if cuentas[elem] == 0:
+            missed+=1
+        if cuentas[elem] > 1:
+            repetidos+=1
+
+    maximo_cadenas_teoricas_adicionales = len(cadena_reconstruida)-(LONGITUD-1)-NUMERO
+    exceso = adicional - maximo_cadenas_teoricas_adicionales
+
+    print('Cuentas:',cuentas)
+    print('Adicional: ',adicional)
+    print('Adicionales: ',adicionales)
+    print('Exceso:',exceso)
+    print('Cadena:',cadena_reconstruida)
+    print('Individuo:', individual)
+
+    if missed > 0:
+        return missed + 200
+    elif repetidos > 0:
+        return repetidos + 50
+    elif adicional > 0:
+        return adicional
+    else:
+        return len(cadena_reconstruida)  # Premia la cadena perfecta más corta
+   """
+    
+    
 
 def roulette_selection(population):
     """
@@ -242,17 +304,37 @@ for _ in range(ncasos):
     print(rta[0])
 '''
 
+
+
 SUBCADENAS = ['aab','baa','aaa','bbb']
 NUMERO = 4
 LONGITUD = 3
+"""
+SUBCADENAS = ['nfid','conf','cial','denc','onfi','enci']
+NUMERO = 6
+LONGITUD = 4
+"""
+
 rta = texto_minimo_reconstruible(NUMERO, LONGITUD, SUBCADENAS)
 matriz_rta= rta[0]
 texto=''
+
+"""
 for elem in matriz_rta[0]:
     if elem!=0:
         texto+=SUBCADENAS[elem-1][matriz_rta[1][elem-1]:matriz_rta[2][elem-1]+1]
-#print('matriz solucion',rta[0])
-#print('fitness:',rta[1])
-#print(texto)
+"""
+
+for i in range(NUMERO):
+    if matriz_rta[0][i] != 0:
+        inicio=matriz_rta[1][i]
+        fin=matriz_rta[2][i]
+        subcadena=SUBCADENAS[matriz_rta[0][i] - 1]
+        subcadena=subcadena[inicio:fin]
+        texto+=subcadena
+            
+print('matriz solucion',rta[0])
+print('fitness:',rta[1])
+print(texto)
 
 
