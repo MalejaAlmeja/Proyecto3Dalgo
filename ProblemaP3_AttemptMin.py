@@ -68,7 +68,7 @@ def texto_minimo_reconstruible(n: int, k: int, subcadenas: list):
     matrix = [[i for i in range(1,n+1)],[0 for i in range(n)],[(k-1) for i in range(n)]]
     ga = pyeasyga.GeneticAlgorithm(matrix,
                                    population_size=100,
-                                   generations=300,
+                                   generations=2000,
                                    crossover_probability=0.8,
                                    mutation_probability=0.2,
                                    elitism=True,
@@ -118,7 +118,7 @@ def crossover(parent_1, parent_2):
     return child1, child2
 
 def mutate(individual):
-    mutation_type = random.choice(["swap", "extreme_edit"])
+    mutation_type = random.choice(["swap", "extreme_edit", "delete_substring"])
 
     if mutation_type == "swap":
         idx1, idx2 = random.sample(range(0,NUMERO), 2)
@@ -132,6 +132,10 @@ def mutate(individual):
             individual[1][idx] = random.randint(0,individual[2][idx])
         else:
             individual[2][idx] = random.randint(individual[1][idx],LONGITUD-1)
+    else:
+        idx = random.randint(0, NUMERO-1)
+        individual[0][idx] = 0
+
 
 
 
@@ -171,22 +175,28 @@ def fitness(individual, data):
 
     maximo_cadenas_teoricas_adicionales = len(cadena_reconstruida)-(LONGITUD-1)-NUMERO
     exceso = adicional - maximo_cadenas_teoricas_adicionales
-
+    global minima_longitud
     print('Cuentas:',cuentas)
     print('Adicional: ',adicional)
     print('Adicionales: ',adicionales)
     print('Exceso:',exceso)
     print('Cadena:',cadena_reconstruida)
     print('Individuo:', individual)
-
+    
     if missed > 0:
-        return missed + 200
+        return missed + 300
     elif repetidos > 0:
         return repetidos + 50
-    elif adicional > 0:
-        return adicional
-    else:
-        return len(cadena_reconstruida)  # Premia la cadena perfecta más corta
+    
+    global minima_longitud_set
+    minima_longitud_set.add(minima_longitud)
+    if len(cadena_reconstruida) <= minima_longitud:
+        minima_longitud = len(cadena_reconstruida)
+        minima_longitud_set.add(minima_longitud)
+        print('minima:',minima_longitud)
+    #elif exceso > 0:
+        #return adicional
+    return len(cadena_reconstruida)-minima_longitud # Premia la cadena perfecta más corta
    
 
 def roulette_selection(population):
@@ -224,16 +234,27 @@ for _ in range(ncasos):
     rta = texto_minimo_reconstruible(int(n), int(k), subcadenas)
     print(rta[0])
 '''
+#texto = 
+SUBCADENAS = ['nfid','conf','cial','denc','onfi','enci'
+]
 
-SUBCADENAS = ['nfid','conf','cial','denc','onfi','enci']
 NUMERO = 6
 LONGITUD = 4
+minima_longitud = 24
+minima_longitud_set = set()
+minima_longitud_set.add(24)
 rta = texto_minimo_reconstruible(NUMERO, LONGITUD, SUBCADENAS)
-matriz_rta= rta[0]
 texto=''
-for elem in matriz_rta[0]:
-    if elem!=0:
-        texto+=SUBCADENAS[elem-1][matriz_rta[1][elem-1]:matriz_rta[2][elem-1]+1]
+individual=rta[0]
+for i in range(NUMERO):
+    if individual[0][i] != 0:
+        inicio=individual[1][i]
+        fin=individual[2][i]
+        subcadena=SUBCADENAS[individual[0][i] - 1]
+        subcadena=subcadena[inicio:fin+1]
+        texto+=subcadena
+
 print('matriz solucion',rta[0])
 print('fitness:',rta[1])
 print(texto)
+print(minima_longitud_set)
