@@ -11,7 +11,7 @@ def texto_minimo_reconstruible(n: int, k: int, subcadenas: list):
     matrix = [[i for i in range(1,n+1)],[0 for i in range(n)],[(k-1) for i in range(n)]]
     ga = pyeasyga.GeneticAlgorithm(matrix,
                                    population_size=100,
-                                   generations=2000,
+                                   generations=20000,
                                    crossover_probability=0.8,
                                    mutation_probability=0.2,
                                    elitism=True,
@@ -123,21 +123,20 @@ def fitness(individual, data):
     print('Exceso:',exceso)
     print('Cadena:',cadena_reconstruida)
     print('Individuo:', individual)
-    
+    print('minima:',minima_longitud)
+   
     if missed > 0:
-        return missed + 300
+        return missed + 100
     elif repetidos > 0:
         return repetidos + 50
-    
-    global minima_longitud_set
-    minima_longitud_set.add(minima_longitud)
-    if len(cadena_reconstruida) <= minima_longitud:
+    elif len(cadena_reconstruida) <= minima_longitud:
         minima_longitud = len(cadena_reconstruida)
-        minima_longitud_set.add(minima_longitud)
         print('minima:',minima_longitud)
-    #elif exceso > 0:
-        #return adicional
-    return len(cadena_reconstruida)-minima_longitud # Premia la cadena perfecta más corta
+        return 0  
+    elif exceso > 0:
+        return exceso
+    else:
+        return len(cadena_reconstruida) # Premia la cadena perfecta más corta
    
 
 def roulette_selection(population):
@@ -176,14 +175,24 @@ for _ in range(ncasos):
     print(rta[0])
 '''
 #texto = 
-SUBCADENAS = ['nfid','conf','cial','denc','onfi','enci'
+SUBCADENAS = [
+  "text",  
+  "exto",  
+  "tomi",  
+  "mini",  
+  "nimo",  
+  "more",  
+  "econ",  
+  "cons",  
+  "onst",  
+  "stru",  
+  "ruib",  
+  "ible"   
 ]
 
-NUMERO = 6
+NUMERO = 12
 LONGITUD = 4
-minima_longitud = 24
-minima_longitud_set = set()
-minima_longitud_set.add(24)
+minima_longitud = 12*4
 rta = texto_minimo_reconstruible(NUMERO, LONGITUD, SUBCADENAS)
 texto=''
 individual=rta[0]
@@ -198,4 +207,3 @@ for i in range(NUMERO):
 print('matriz solucion',rta[0])
 print('fitness:',rta[1])
 print(texto)
-print(minima_longitud_set)
