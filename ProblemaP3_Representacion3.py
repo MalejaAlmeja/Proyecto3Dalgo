@@ -8,12 +8,12 @@ import random
 from pyeasyga import pyeasyga
 
 def texto_minimo_reconstruible(n: int, k: int, subcadenas: list):
-    matrix = [[i for i in range(1,n+1)],[0 for i in range(n)],[(k-1) for i in range(n)]]
-    ga = pyeasyga.GeneticAlgorithm(matrix,
+    vector = [i for i in range(1,n+1)]
+    ga = pyeasyga.GeneticAlgorithm(vector,
                                    population_size=100,
-                                   generations=20000,
-                                   crossover_probability=0.7,
-                                   mutation_probability=0.3,
+                                   generations=1000,
+                                   crossover_probability=0.8,
+                                   mutation_probability=0.2,
                                    elitism=True,
                                    maximise_fitness=False)
 
@@ -21,7 +21,7 @@ def texto_minimo_reconstruible(n: int, k: int, subcadenas: list):
     ga.crossover_function = crossover
     ga.mutate_function = mutate
     ga.selection_function = roulette_selection  
-    ga.fitness_function = fitness  # pendiente 
+    ga.fitness_function = fitness 
     ga.run()
 
     best_fitness = ga.best_individual()[0]
@@ -29,55 +29,22 @@ def texto_minimo_reconstruible(n: int, k: int, subcadenas: list):
     return text, best_fitness
 
 def create_individual(data):
-    genes = [
-        data[0][:],  
-        data[1][:], 
-        data[2][:]  
-    ]
+    genes = data[:] 
+    random.shuffle(genes)
 
-    numero_subs = random.randint(0, NUMERO)
-    random.shuffle(genes[0])
-
-    for i in range(NUMERO):
-        if i >= (NUMERO - numero_subs):
-            inicio = random.randint(0, LONGITUD-1)
-            fin = random.randint(inicio, LONGITUD-1)
-            genes[1][i] = inicio
-            genes[2][i] = fin
-        else:
-            genes[0][i] = 0 
     return genes
 
 def crossover(parent_1, parent_2):
-    cut = random.randint(1, NUMERO - 1)
-    child1 =[ parent_1[0][:cut] + parent_2[0][cut:],
-              parent_1[1][:cut] + parent_2[1][cut:],
-              parent_1[2][:cut] + parent_2[2][cut:] ]
-    child2 =[ parent_2[0][:cut] + parent_1[0][cut:],
-              parent_2[1][:cut] + parent_1[1][cut:],
-              parent_2[2][:cut] + parent_1[2][cut:]]
+    cut = random.randint(1,NUMERO)
+    child1 = parent_1[:cut] + parent_2[cut:]
+    child2 = parent_2[:cut] + parent_1[cut:]
+    
     return child1, child2
 
 def mutate(individual):
-    mutation_type = random.choice(["swap", "extreme_edit", "delete_substring"])
-
-    if mutation_type == "swap":
-        idx1, idx2 = random.sample(range(0,NUMERO), 2)
-        individual[0][idx1], individual[0][idx2] = individual[0][idx2], individual[0][idx1]
-        individual[1][idx1], individual[1][idx2] = individual[1][idx2], individual[1][idx1]
-        individual[2][idx1], individual[2][idx2] = individual[2][idx2], individual[2][idx1]
-    elif mutation_type == "extreme_edit":
-        idx = random.randint(0, NUMERO-1)
-        action = random.choice(["cambiar_inicio", "cambiar_fin"])
-        if action == "cambiar_inicio":
-            individual[1][idx] = random.randint(0,individual[2][idx])
-        else:
-            individual[2][idx] = random.randint(individual[1][idx],LONGITUD-1)
-    else:
-        idx = random.randint(0, NUMERO-1)
-        individual[0][idx] = 0
-
-
+    idx = random.randint(0,NUMERO-1)
+    subcadena_aleatoria = random.randint(1,NUMERO)
+    individual[idx] = subcadena_aleatoria
 
 
 def fitness(individual, data):
@@ -87,21 +54,29 @@ def fitness(individual, data):
     adicionales=[]
     cuentas = {}
     cadena_reconstruida = ''
+    #Se genera la subcadena en el orden que corresponde; se verifican las intersecciones
     for i in range(NUMERO):
-        if individual[0][i] != 0:
-            inicio=individual[1][i]
-            fin=individual[2][i]
-            subcadena=SUBCADENAS[individual[0][i] - 1]
-            subcadena=subcadena[inicio:fin+1]
-            cadena_reconstruida+=subcadena
+        if i == 0:
+            cadena_reconstruida += SUBCADENAS[individual[0]-1]
+        else:
+            ultima_k_subcadena = cadena_reconstruida[-LONGITUD:]
+            actual = SUBCADENAS[individual[i]-1]
+            letras_adicionales = actual
+            for j in range(LONGITUD,0,-1):
+                if ultima_k_subcadena[-j:] == actual[:j]:
+                    letras_adicionales = actual[j:]
+                    break
 
+            cadena_reconstruida+=letras_adicionales
+
+    #Se verifica cuántas veces se repiten las cadenas de entrada
     for i in SUBCADENAS:
         cuentas[i]=0
         for j in range(0,len(cadena_reconstruida) - LONGITUD + 1):
             sujeto=cadena_reconstruida[j:j+LONGITUD]
             if sujeto == i:
                 cuentas[i]+=1
-
+    #Se verifica cuántas subcadenas de tamaño k hay en la solución que no estén dentro del arreglo de subcadenas
     for j in range(0,len(cadena_reconstruida) - LONGITUD + 1):
             sujeto=cadena_reconstruida[j:j+LONGITUD]
             if sujeto not in SUBCADENAS:
@@ -116,27 +91,23 @@ def fitness(individual, data):
 
     maximo_cadenas_teoricas_adicionales = len(cadena_reconstruida)-(LONGITUD-1)-NUMERO
     exceso = adicional - maximo_cadenas_teoricas_adicionales
-    global minima_longitud
+
     print('Cuentas:',cuentas)
     print('Adicional: ',adicional)
     print('Adicionales: ',adicionales)
     print('Exceso:',exceso)
     print('Cadena:',cadena_reconstruida)
     print('Individuo:', individual)
-    print('minima:',minima_longitud)
-   
+
     if missed > 0:
-        return missed + 100
+        return missed + 200
     elif repetidos > 0:
         return repetidos + 50
-    elif len(cadena_reconstruida) <= minima_longitud:
-        minima_longitud = len(cadena_reconstruida)
-        print('minima:',minima_longitud)
-        return 0  
-    elif exceso > 0:
-        return adicional
+    #comento lo de adicionales porque no estoy segura
+    #elif adicional > 0:
+        #return adicional
     else:
-        return len(cadena_reconstruida) # Premia la cadena perfecta más corta
+        return len(cadena_reconstruida)  # Premia la cadena perfecta más corta
    
 
 def roulette_selection(population):
@@ -174,35 +145,33 @@ for _ in range(ncasos):
     rta = texto_minimo_reconstruible(int(n), int(k), subcadenas)
     print(rta[0])
 '''
-#texto = 
-SUBCADENAS = [
-  "text",  
-  "exto",  
-  "tomi",  
-  "mini",  
-  "nimo",  
-  "more",  
-  "econ",  
-  "cons",  
-  "onst",  
-  "stru",  
-  "ruib",  
-  "ible"   
-]
 
-NUMERO = 12
+SUBCADENAS = ['nfid','conf','cial','denc','onfi','enci']
+NUMERO = 6
 LONGITUD = 4
-minima_longitud = 12*4
+letras = set()
+for sub in SUBCADENAS:
+    for letra in sub:
+        letras.add(letra)
+LETRAS = list(letras)
+
 rta = texto_minimo_reconstruible(NUMERO, LONGITUD, SUBCADENAS)
+individual= rta[0]
 texto=''
-individual=rta[0]
+
 for i in range(NUMERO):
-    if individual[0][i] != 0:
-        inicio=individual[1][i]
-        fin=individual[2][i]
-        subcadena=SUBCADENAS[individual[0][i] - 1]
-        subcadena=subcadena[inicio:fin+1]
-        texto+=subcadena
+        if i == 0:
+            texto += SUBCADENAS[individual[0]-1]
+        else:
+            ultima_k_subcadena = texto[-LONGITUD:]
+            actual = SUBCADENAS[individual[i]-1]
+            letras_adicionales = actual
+            for j in range(LONGITUD,0,-1):
+                if ultima_k_subcadena[-j:] == actual[:j]:
+                    letras_adicionales = actual[j:]
+                    break
+
+            texto+=letras_adicionales
 
 print('matriz solucion',rta[0])
 print('fitness:',rta[1])

@@ -1,6 +1,6 @@
 import java.util.*;
 
-    
+    //Este es de Leetcode
 class Solution {
     public String shortestSuperstring(String[] A) {
         int N = A.length;
