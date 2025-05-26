@@ -35,15 +35,27 @@ def create_individual(data):
     return genes
 
 def crossover(parent_1, parent_2):
+    """
     cut = random.randint(1,NUMERO)
     child1 = parent_1[:cut] + parent_2[cut:]
     child2 = parent_2[:cut] + parent_1[cut:]
     
     return child1, child2
+    """
+    crossover_index = random.randrange(1, len(parent_1))
+    child_1a = parent_1[:crossover_index]
+    child_1b = [i for i in parent_2 if i not in child_1a]
+    child_1 = child_1a + child_1b
+
+    child_2a = parent_2[crossover_index:]
+    child_2b = [i for i in parent_1 if i not in child_2a]
+    child_2 = child_2a + child_2b
+
+    return child_1, child_2
 
 def mutate(individual):
     idx = random.randint(0,NUMERO-1)
-    subcadena_aleatoria = random.randint(1,NUMERO)
+    subcadena_aleatoria = random.randint(1,NUMERO-1)
     individual[idx] = subcadena_aleatoria
 
 
@@ -55,7 +67,7 @@ def fitness(individual, data):
     cuentas = {}
     cadena_reconstruida = ''
     #Se genera la subcadena en el orden que corresponde; se verifican las intersecciones
-    for i in range(NUMERO):
+    for i in range(0,NUMERO-1):
         if i == 0:
             cadena_reconstruida += SUBCADENAS[individual[0]-1]
         else:
