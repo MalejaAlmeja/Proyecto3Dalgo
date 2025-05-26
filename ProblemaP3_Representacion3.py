@@ -35,16 +35,24 @@ def create_individual(data):
     return genes
 
 def crossover(parent_1, parent_2):
-    cut = random.randint(1,NUMERO)
-    child1 = parent_1[:cut] + parent_2[cut:]
-    child2 = parent_2[:cut] + parent_1[cut:]
-    
-    return child1, child2
+    print('Crossover entre:', parent_1, 'y', parent_2)
+    crossover_index = random.randrange(1, NUMERO)
+    child_1a = parent_1[:crossover_index]
+    child_1b = [i for i in parent_2 if i not in child_1a]
+    child_1 = child_1a + child_1b
+
+    child_2a = parent_2[crossover_index:]
+    child_2b = [i for i in parent_1 if i not in child_2a]
+    child_2 = child_2a + child_2b
+    print('Hijos generados:', child_1, 'y', child_2)
+
+    return child_1, child_2
+
 
 def mutate(individual):
-    idx = random.randint(0,NUMERO-1)
-    subcadena_aleatoria = random.randint(1,NUMERO)
-    individual[idx] = subcadena_aleatoria
+    mutate_index1 = random.randrange(len(individual))
+    mutate_index2 = random.randrange(len(individual))
+    individual[mutate_index1], individual[mutate_index2] = individual[mutate_index2], individual[mutate_index1]
 
 
 def fitness(individual, data):
@@ -88,11 +96,11 @@ def fitness(individual, data):
     print('Minimo: ', minima_longitud_texto)
 
     if missed > 0 or repetidos > 0:
-        return missed + 100 + len(cadena_reconstruida)
+        return missed +repetidos+ 100 + len(cadena_reconstruida)
     elif len(cadena_reconstruida) < minima_longitud_texto:
         minima_longitud_texto = len(cadena_reconstruida)
         print('Nuevo minimo: ', minima_longitud_texto)
-    return len(cadena_reconstruida)
+    return len(cadena_reconstruida) - minima_longitud_texto
    
 
 def roulette_selection(population):
@@ -131,14 +139,25 @@ for _ in range(ncasos):
     print(rta[0])
 '''
 
-SUBCADENAS = ['nfid','conf','cial','denc','onfi','enci']
-NUMERO = 6
+SUBCADENAS = [
+    'much', 'ucho', 'hosa', 'osañ', 'años', 'osde', 'desp', 'espu', 'spué', 'pués',
+    'ésfr', 'sfre', 'fren', 'rent', 'ente', 'ntea', 'teal', 'ealp', 'alpe', 'lelo',
+    'elot', 'otón', 'tond', 'ondef', 'defu', 'fusi', 'usil', 'sila', 'ilam', 'lami',
+    'amie', 'mien', 'ient', 'ntoe', 'toel', 'elco', 'lcor', 'coro', 'oron', 'rone',
+    'onel', 'nela', 'elau', 'aure', 'urel', 'elia', 'lian', 'iano', 'anob', 'nobu',
+    'buend', 'endí', 'ndía', 'díah', 'íaha', 'habí', 'abía', 'biad', 'iade', 'ader',
+    'dere', 'ecor', 'cord', 'orda', 'rdar', 'dara', 'raqu', 'aque', 'uell', 'ella',
+    'llat', 'tard', 'arde', 'derem', 'remo', 'mota', 'taen', 'aenq', 'enqu', 'nque',
+    'ques', 'esup', 'supa', 'upad', 'padre', 'drel', 'relo', 'elol', 'loll', 'lleva',
+    'evóa', 'voac', 'oaco', 'cono', 'onoc', 'noce', 'ocer', 'cerel', 'erel', 'elhi',
+    'hiel','ielo'
+]
+
+
+''''SUBCADENAS = ['nfid','conf','cial','denc','onfi','enci']'''
+
+NUMERO = 102
 LONGITUD = 4
-letras = set()
-for sub in SUBCADENAS:
-    for letra in sub:
-        letras.add(letra)
-LETRAS = list(letras)
 
 minima_longitud_texto=NUMERO*LONGITUD
 rta = texto_minimo_reconstruible(NUMERO, LONGITUD, SUBCADENAS)
