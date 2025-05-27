@@ -78,10 +78,10 @@ def graficos(ga):
 def texto_minimo_reconstruible(n: int, k: int, subcadenas: list):
     vector = [i for i in range(1,n+1)]
     ga = pyeasyga.GeneticAlgorithm(vector,
-                                   population_size=200,
-                                   generations=500,
+                                   population_size=50,
+                                   generations=100,
                                    crossover_probability=0.9,
-                                   mutation_probability=0.1,
+                                   mutation_probability=0.5,
                                    elitism=True,
                                    maximise_fitness=False)
 
@@ -98,10 +98,46 @@ def texto_minimo_reconstruible(n: int, k: int, subcadenas: list):
     text = ga.best_individual()[1]
     return text, best_fitness
 
-def create_individual(data):
-    genes = data[:] 
-    random.shuffle(genes)
 
+def calcular_solapamiento(a, b):
+    # Retorna el tamaño del mayor solapamiento entre sufijo de a y prefijo de b
+    max_olap = 0
+    for i in range(1, min(len(a), len(b)) + 1):
+        if a[-i:] == b[:i]:
+            max_olap = i
+    return max_olap
+
+def heuristically_sorted_initial():
+    n = len(SUBCADENAS)
+    usadas = set()
+    orden = []
+
+    actual_index = random.randrange(0,n)  # Podrías empezar con cualquier índice
+    orden.append(actual_index)
+    usadas.add(actual_index)
+
+    while len(orden) < n:
+        mejor_olap = -1
+        mejor_siguiente = None
+        for i in range(n):
+            if i in usadas:
+                continue
+            olap = calcular_solapamiento(SUBCADENAS[orden[-1]], SUBCADENAS[i])
+            if olap > mejor_olap:
+                mejor_olap = olap
+                mejor_siguiente = i
+        orden.append(mejor_siguiente)
+        usadas.add(mejor_siguiente)
+
+    # Si en tu código los individuos son índices +1, puedes hacer:
+    return [i + 1 for i in orden]
+
+def create_individual(data):
+    if random.choice([True, False]):
+        genes = data[:] 
+        random.shuffle(genes)
+    else:
+        genes= heuristically_sorted_initial()
     return genes
 
 def crossover(parent_1, parent_2):
@@ -148,19 +184,20 @@ def fitness(individual, data):
 
             cadena_reconstruida+=letras_adicionales
 
+    """    
     for i in range(1, NUMERO+1):
         cuentas[i]=0
     for i in individual:
         cuentas[i]+=1
 
-
+    
     for elem in cuentas:
         if cuentas[elem] == 0:
             missed+=1
         if cuentas[elem] > 1:
             repetidos+=cuentas[elem]
 
-    """
+    
     print('Cadena:',cadena_reconstruida)
     print('Individuo:', individual)
     print('Cuentas:', cuentas)
@@ -168,12 +205,12 @@ def fitness(individual, data):
     """
     
 
-    if missed > 0 or repetidos > 0:
-        return missed +repetidos+ 100 + len(cadena_reconstruida)
-    elif len(cadena_reconstruida) < minima_longitud_texto:
-        minima_longitud_texto = len(cadena_reconstruida)
+    #if missed > 0 or repetidos > 0:
+        #return missed +repetidos+ 50 + len(cadena_reconstruida)
+    #elif len(cadena_reconstruida) < minima_longitud_texto:
+        #minima_longitud_texto = len(cadena_reconstruida)
         ##print('Nuevo minimo: ', minima_longitud_texto)
-    return len(cadena_reconstruida) - minima_longitud_texto
+    return len(cadena_reconstruida) #- minima_longitud_texto
    
 
 def roulette_selection(population):
@@ -223,13 +260,19 @@ SUBCADENAS = [
     'llat', 'tard', 'arde', 'derem', 'remo', 'mota', 'taen', 'aenq', 'enqu', 'nque',
     'ques', 'esup', 'supa', 'upad', 'padre', 'drel', 'relo', 'elol', 'loll', 'lleva',
     'evóa', 'voac', 'oaco', 'cono', 'onoc', 'noce', 'ocer', 'cerel', 'erel', 'elhi',
+    'hiel','ielo',
+    'ndía', 'díah', 'íaha', 'habí', 'abía', 'biad', 'iade', 'ader',
+    'dere', 'ecor', 'cord', 'orda', 'rdar', 'dara', 'raqu', 'aque', 'uell', 'ella',
+    'llat', 'tard', 'arde', 'derem', 'remo', 'mota', 'taen', 'aenq', 'enqu', 'nque',
+    'ques', 'esup', 'supa', 'upad', 'padre', 'drel', 'relo', 'elol', 'loll', 'lleva',
+    'evóa', 'voac', 'oaco', 'cono', 'onoc', 'noce', 'ocer', 'cerel', 'erel', 'elhi',
     'hiel','ielo'
 ]
 
-
-''''SUBCADENAS = ['nfid','conf','cial','denc','onfi','enci']'''
-
-NUMERO = 102
+'''
+SUBCADENAS = ['nfid','conf','cial','denc','onfi','enci']
+'''
+NUMERO = len(SUBCADENAS)
 LONGITUD = 4
 
 minima_longitud_texto=NUMERO*LONGITUD
@@ -254,3 +297,4 @@ for i in range(NUMERO):
 print('matriz solucion',rta[0])
 print('fitness:',rta[1])
 print(texto)
+print(len(texto))
