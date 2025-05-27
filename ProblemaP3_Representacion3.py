@@ -10,7 +10,7 @@ from pyeasyga import pyeasyga
 def texto_minimo_reconstruible(n: int, k: int, subcadenas: list):
     vector = [i for i in range(1,n+1)]
     ga = pyeasyga.GeneticAlgorithm(vector,
-                                   population_size=100,
+                                   population_size=500,
                                    generations=1000,
                                    crossover_probability=0.8,
                                    mutation_probability=0.2,
@@ -35,7 +35,7 @@ def create_individual(data):
     return genes
 
 def crossover(parent_1, parent_2):
-    print('Crossover entre:', parent_1, 'y', parent_2)
+    ##print('Crossover entre:', parent_1, 'y', parent_2)
     crossover_index = random.randrange(1, NUMERO)
     child_1a = parent_1[:crossover_index]
     child_1b = [i for i in parent_2 if i not in child_1a]
@@ -44,7 +44,6 @@ def crossover(parent_1, parent_2):
     child_2a = parent_2[crossover_index:]
     child_2b = [i for i in parent_1 if i not in child_2a]
     child_2 = child_2a + child_2b
-    print('Hijos generados:', child_1, 'y', child_2)
 
     return child_1, child_2
 
@@ -89,18 +88,20 @@ def fitness(individual, data):
         if cuentas[elem] > 1:
             repetidos+=cuentas[elem]
 
+    """
     print('Cadena:',cadena_reconstruida)
     print('Individuo:', individual)
     print('Cuentas:', cuentas)
-    global minima_longitud_texto
     print('Minimo: ', minima_longitud_texto)
+    """
+    ##global minima_longitud_texto
 
     if missed > 0 or repetidos > 0:
         return missed +repetidos+ 100 + len(cadena_reconstruida)
     elif len(cadena_reconstruida) < minima_longitud_texto:
         minima_longitud_texto = len(cadena_reconstruida)
-        print('Nuevo minimo: ', minima_longitud_texto)
-    return len(cadena_reconstruida) - minima_longitud_texto
+        ##print('Nuevo minimo: ', minima_longitud_texto)
+    return len(cadena_reconstruida)
    
 
 def roulette_selection(population):
