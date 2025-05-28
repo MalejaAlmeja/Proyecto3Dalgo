@@ -29,7 +29,7 @@ FRAGMENTOS = [
 
 # control greedy
 generados_greedy = 0
-MAXIMO_GREEDY = TAMANO/2
+MAXIMO_GREEDY = round(TAMANO/2)
 
 def reconstruccion_optima(n: int, k: int, bloques: list):
     valores = list(range(1, n + 1))
@@ -79,6 +79,9 @@ def evaluar(cromosoma, _):
     reconstruida = FRAGMENTOS[cromosoma[0] - 1]
     contador = {}
 
+    if len(cromosoma)==101:
+        print("STOP")
+            
     for idx in range(1, TAMANO):
         actual = FRAGMENTOS[cromosoma[idx] - 1]
         anterior = reconstruida[-LONG:]
@@ -105,17 +108,28 @@ def seleccion_ruleta(poblacion):
             return ind
 
 def generar_greedy():
-    disponibles = list(range(1, TAMANO + 1))
-    secuencia = [disponibles.pop(random.randint(0, len(disponibles) - 1))]
+    added={}
+    secuencia = [random.randint(1, TAMANO)]
 
     while len(secuencia)<TAMANO: 
         ultimo = FRAGMENTOS[secuencia[-1] - 1]
+        maxOverlap=-1
+        maxIdx=0
         
-        siguiente = max(disponibles, key=lambda x: calcular_solape(ultimo, FRAGMENTOS[x - 1]))
-        secuencia.append(siguiente)
-        disponibles.remove(siguiente)
-
-    return secuencia
+        for i in range(0, TAMANO-1):
+            if i not in added:
+                overlap=calcular_solape(ultimo, FRAGMENTOS[i])
+                if maxOverlap<overlap:
+                    maxOverlap=overlap
+                    maxIdx=i
+                       
+        secuencia.append(maxIdx+1)
+        added[maxIdx]=0
+    
+    if len(secuencia)==101:
+        print("STOP")
+        
+    return secuencia.copy()
 
 def calcular_solape(a, b):
     for i in range(LONG, 0, -1):
