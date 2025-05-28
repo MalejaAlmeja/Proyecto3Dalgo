@@ -123,6 +123,26 @@ def calcular_solape(a, b):
             return i
     return 0
 
+'''
+linea = sys.stdin.readline().strip()
+ncasos = int(linea)
+for _ in range(ncasos):
+    subcadenas = []
+    dicc_subcadenas={}
+    linea = sys.stdin.readline().strip()
+    n, k = map(int, linea.split())
+    for _ in range(n):
+        subcadena = sys.stdin.readline().strip()
+        if subcadena not in dicc_subcademnas:
+            subcadenas.append(subcadena)
+            dicc_subcadenas[subcadena]=0
+            
+    SUBCADENAS = subcadenas
+    NUMERO = len(subcadenas)
+    LONGITUD = k
+    rta = texto_minimo_reconstruible(int(n), int(k), subcadenas)
+    print(rta[0])
+'''
 # 
 respuesta = reconstruccion_optima(TAMANO, LONG, FRAGMENTOS)
 orden_final = respuesta[0]
