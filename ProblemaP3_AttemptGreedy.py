@@ -89,16 +89,6 @@ def evaluar(cromosoma, _):
                 break
         reconstruida += actual[solape:]
 
-    for i in range(1, TAMANO + 1):
-        contador[i] = 0
-    for i in cromosoma:
-        contador[i] += 1
-
-    faltantes = sum(1 for x in contador if contador[x] == 0)
-    duplicados = sum(contador[x] - 1 for x in contador if contador[x] > 1)
-
-    if faltantes > 0 or duplicados > 0:
-        return faltantes + duplicados + 100 + len(reconstruida)
     if len(reconstruida) < longitud_minima:
         longitud_minima = len(reconstruida)
 
