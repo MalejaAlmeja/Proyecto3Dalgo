@@ -8,7 +8,7 @@ import random
 from pyeasyga import pyeasyga
 
 #constantes globales
-TAMANO = 102
+TAMANO = 1000
 LONG = 4
 longitud_minima = TAMANO * LONG
 
@@ -24,7 +24,106 @@ FRAGMENTOS = [
     'llat', 'tard', 'arde', 'derem', 'remo', 'mota', 'taen', 'aenq', 'enqu', 'nque',
     'ques', 'esup', 'supa', 'upad', 'padre', 'drel', 'relo', 'elol', 'loll', 'lleva',
     'evóa', 'voac', 'oaco', 'cono', 'onoc', 'noce', 'ocer', 'cerel', 'erel', 'elhi',
-    'hiel','ielo'
+    'hiel','ielo',
+    'much', 'ucho', 'hosa', 'osañ', 'años', 'osde', 'desp', 'espu', 'spué', 'pués',
+    'ésfr', 'sfre', 'fren', 'rent', 'ente', 'ntea', 'teal', 'ealp', 'alpe', 'lelo',
+    'elot', 'otón', 'tond', 'ondef', 'defu', 'fusi', 'usil', 'sila', 'ilam', 'lami',
+    'amie', 'mien', 'ient', 'ntoe', 'toel', 'elco', 'lcor', 'coro', 'oron', 'rone',
+    'onel', 'nela', 'elau', 'aure', 'urel', 'elia', 'lian', 'iano', 'anob', 'nobu',
+    'buend', 'endí', 'ndía', 'díah', 'íaha', 'habí', 'abía', 'biad', 'iade', 'ader',
+    'dere', 'ecor', 'cord', 'orda', 'rdar', 'dara', 'raqu', 'aque', 'uell', 'ella',
+    'llat', 'tard', 'arde', 'derem', 'remo', 'mota', 'taen', 'aenq', 'enqu', 'nque',
+    'ques', 'esup', 'supa', 'upad', 'padre', 'drel', 'relo', 'elol', 'loll', 'lleva',
+    'evóa', 'voac', 'oaco', 'cono', 'onoc', 'noce', 'ocer', 'cerel', 'erel', 'elhi',
+    'hiel','ielo',
+    'much', 'ucho', 'hosa', 'osañ', 'años', 'osde', 'desp', 'espu', 'spué', 'pués',
+    'ésfr', 'sfre', 'fren', 'rent', 'ente', 'ntea', 'teal', 'ealp', 'alpe', 'lelo',
+    'elot', 'otón', 'tond', 'ondef', 'defu', 'fusi', 'usil', 'sila', 'ilam', 'lami',
+    'amie', 'mien', 'ient', 'ntoe', 'toel', 'elco', 'lcor', 'coro', 'oron', 'rone',
+    'onel', 'nela', 'elau', 'aure', 'urel', 'elia', 'lian', 'iano', 'anob', 'nobu',
+    'buend', 'endí', 'ndía', 'díah', 'íaha', 'habí', 'abía', 'biad', 'iade', 'ader',
+    'dere', 'ecor', 'cord', 'orda', 'rdar', 'dara', 'raqu', 'aque', 'uell', 'ella',
+    'llat', 'tard', 'arde', 'derem', 'remo', 'mota', 'taen', 'aenq', 'enqu', 'nque',
+    'ques', 'esup', 'supa', 'upad', 'padre', 'drel', 'relo', 'elol', 'loll', 'lleva',
+    'evóa', 'voac', 'oaco', 'cono', 'onoc', 'noce', 'ocer', 'cerel', 'erel', 'elhi',
+    'hiel','ielo',
+    'much', 'ucho', 'hosa', 'osañ', 'años', 'osde', 'desp', 'espu', 'spué', 'pués',
+    'ésfr', 'sfre', 'fren', 'rent', 'ente', 'ntea', 'teal', 'ealp', 'alpe', 'lelo',
+    'elot', 'otón', 'tond', 'ondef', 'defu', 'fusi', 'usil', 'sila', 'ilam', 'lami',
+    'amie', 'mien', 'ient', 'ntoe', 'toel', 'elco', 'lcor', 'coro', 'oron', 'rone',
+    'onel', 'nela', 'elau', 'aure', 'urel', 'elia', 'lian', 'iano', 'anob', 'nobu',
+    'buend', 'endí', 'ndía', 'díah', 'íaha', 'habí', 'abía', 'biad', 'iade', 'ader',
+    'dere', 'ecor', 'cord', 'orda', 'rdar', 'dara', 'raqu', 'aque', 'uell', 'ella',
+    'llat', 'tard', 'arde', 'derem', 'remo', 'mota', 'taen', 'aenq', 'enqu', 'nque',
+    'ques', 'esup', 'supa', 'upad', 'padre', 'drel', 'relo', 'elol', 'loll', 'lleva',
+    'evóa', 'voac', 'oaco', 'cono', 'onoc', 'noce', 'ocer', 'cerel', 'erel', 'elhi',
+    'hiel','ielo',
+    'much', 'ucho', 'hosa', 'osañ', 'años', 'osde', 'desp', 'espu', 'spué', 'pués',
+    'ésfr', 'sfre', 'fren', 'rent', 'ente', 'ntea', 'teal', 'ealp', 'alpe', 'lelo',
+    'elot', 'otón', 'tond', 'ondef', 'defu', 'fusi', 'usil', 'sila', 'ilam', 'lami',
+    'amie', 'mien', 'ient', 'ntoe', 'toel', 'elco', 'lcor', 'coro', 'oron', 'rone',
+    'onel', 'nela', 'elau', 'aure', 'urel', 'elia', 'lian', 'iano', 'anob', 'nobu',
+    'buend', 'endí', 'ndía', 'díah', 'íaha', 'habí', 'abía', 'biad', 'iade', 'ader',
+    'dere', 'ecor', 'cord', 'orda', 'rdar', 'dara', 'raqu', 'aque', 'uell', 'ella',
+    'llat', 'tard', 'arde', 'derem', 'remo', 'mota', 'taen', 'aenq', 'enqu', 'nque',
+    'ques', 'esup', 'supa', 'upad', 'padre', 'drel', 'relo', 'elol', 'loll', 'lleva',
+    'evóa', 'voac', 'oaco', 'cono', 'onoc', 'noce', 'ocer', 'cerel', 'erel', 'elhi',
+    'hiel','ielo',
+    'much', 'ucho', 'hosa', 'osañ', 'años', 'osde', 'desp', 'espu', 'spué', 'pués',
+    'ésfr', 'sfre', 'fren', 'rent', 'ente', 'ntea', 'teal', 'ealp', 'alpe', 'lelo',
+    'elot', 'otón', 'tond', 'ondef', 'defu', 'fusi', 'usil', 'sila', 'ilam', 'lami',
+    'amie', 'mien', 'ient', 'ntoe', 'toel', 'elco', 'lcor', 'coro', 'oron', 'rone',
+    'onel', 'nela', 'elau', 'aure', 'urel', 'elia', 'lian', 'iano', 'anob', 'nobu',
+    'buend', 'endí', 'ndía', 'díah', 'íaha', 'habí', 'abía', 'biad', 'iade', 'ader',
+    'dere', 'ecor', 'cord', 'orda', 'rdar', 'dara', 'raqu', 'aque', 'uell', 'ella',
+    'llat', 'tard', 'arde', 'derem', 'remo', 'mota', 'taen', 'aenq', 'enqu', 'nque',
+    'ques', 'esup', 'supa', 'upad', 'padre', 'drel', 'relo', 'elol', 'loll', 'lleva',
+    'evóa', 'voac', 'oaco', 'cono', 'onoc', 'noce', 'ocer', 'cerel', 'erel', 'elhi',
+    'hiel','ielo',
+    'much', 'ucho', 'hosa', 'osañ', 'años', 'osde', 'desp', 'espu', 'spué', 'pués',
+    'ésfr', 'sfre', 'fren', 'rent', 'ente', 'ntea', 'teal', 'ealp', 'alpe', 'lelo',
+    'elot', 'otón', 'tond', 'ondef', 'defu', 'fusi', 'usil', 'sila', 'ilam', 'lami',
+    'amie', 'mien', 'ient', 'ntoe', 'toel', 'elco', 'lcor', 'coro', 'oron', 'rone',
+    'onel', 'nela', 'elau', 'aure', 'urel', 'elia', 'lian', 'iano', 'anob', 'nobu',
+    'buend', 'endí', 'ndía', 'díah', 'íaha', 'habí', 'abía', 'biad', 'iade', 'ader',
+    'dere', 'ecor', 'cord', 'orda', 'rdar', 'dara', 'raqu', 'aque', 'uell', 'ella',
+    'llat', 'tard', 'arde', 'derem', 'remo', 'mota', 'taen', 'aenq', 'enqu', 'nque',
+    'ques', 'esup', 'supa', 'upad', 'padre', 'drel', 'relo', 'elol', 'loll', 'lleva',
+    'evóa', 'voac', 'oaco', 'cono', 'onoc', 'noce', 'ocer', 'cerel', 'erel', 'elhi',
+    'hiel','ielo',
+    'much', 'ucho', 'hosa', 'osañ', 'años', 'osde', 'desp', 'espu', 'spué', 'pués',
+    'ésfr', 'sfre', 'fren', 'rent', 'ente', 'ntea', 'teal', 'ealp', 'alpe', 'lelo',
+    'elot', 'otón', 'tond', 'ondef', 'defu', 'fusi', 'usil', 'sila', 'ilam', 'lami',
+    'amie', 'mien', 'ient', 'ntoe', 'toel', 'elco', 'lcor', 'coro', 'oron', 'rone',
+    'onel', 'nela', 'elau', 'aure', 'urel', 'elia', 'lian', 'iano', 'anob', 'nobu',
+    'buend', 'endí', 'ndía', 'díah', 'íaha', 'habí', 'abía', 'biad', 'iade', 'ader',
+    'dere', 'ecor', 'cord', 'orda', 'rdar', 'dara', 'raqu', 'aque', 'uell', 'ella',
+    'llat', 'tard', 'arde', 'derem', 'remo', 'mota', 'taen', 'aenq', 'enqu', 'nque',
+    'ques', 'esup', 'supa', 'upad', 'padre', 'drel', 'relo', 'elol', 'loll', 'lleva',
+    'evóa', 'voac', 'oaco', 'cono', 'onoc', 'noce', 'ocer', 'cerel', 'erel', 'elhi',
+    'hiel','ielo',
+    'much', 'ucho', 'hosa', 'osañ', 'años', 'osde', 'desp', 'espu', 'spué', 'pués',
+    'ésfr', 'sfre', 'fren', 'rent', 'ente', 'ntea', 'teal', 'ealp', 'alpe', 'lelo',
+    'elot', 'otón', 'tond', 'ondef', 'defu', 'fusi', 'usil', 'sila', 'ilam', 'lami',
+    'amie', 'mien', 'ient', 'ntoe', 'toel', 'elco', 'lcor', 'coro', 'oron', 'rone',
+    'onel', 'nela', 'elau', 'aure', 'urel', 'elia', 'lian', 'iano', 'anob', 'nobu',
+    'buend', 'endí', 'ndía', 'díah', 'íaha', 'habí', 'abía', 'biad', 'iade', 'ader',
+    'dere', 'ecor', 'cord', 'orda', 'rdar', 'dara', 'raqu', 'aque', 'uell', 'ella',
+    'llat', 'tard', 'arde', 'derem', 'remo', 'mota', 'taen', 'aenq', 'enqu', 'nque',
+    'ques', 'esup', 'supa', 'upad', 'padre', 'drel', 'relo', 'elol', 'loll', 'lleva',
+    'evóa', 'voac', 'oaco', 'cono', 'onoc', 'noce', 'ocer', 'cerel', 'erel', 'elhi',
+    'hiel','ielo',
+    'much', 'ucho', 'hosa', 'osañ', 'años', 'osde', 'desp', 'espu', 'spué', 'pués',
+    'ésfr', 'sfre', 'fren', 'rent', 'ente', 'ntea', 'teal', 'ealp', 'alpe', 'lelo',
+    'elot', 'otón', 'tond', 'ondef', 'defu', 'fusi', 'usil', 'sila', 'ilam', 'lami',
+    'amie', 'mien', 'ient', 'ntoe', 'toel', 'elco', 'lcor', 'coro', 'oron', 'rone',
+    'onel', 'nela', 'elau', 'aure', 'urel', 'elia', 'lian', 'iano', 'anob', 'nobu',
+    'buend', 'endí', 'ndía', 'díah', 'íaha', 'habí', 'abía', 'biad', 'iade', 'ader',
+    'dere', 'ecor', 'cord', 'orda', 'rdar', 'dara', 'raqu', 'aque', 'uell', 'ella',
+    'llat', 'tard', 'arde', 'derem', 'remo', 'mota', 'taen', 'aenq', 'enqu', 'nque',
+    'ques', 'esup', 'supa', 'upad', 'padre', 'drel', 'relo', 'elol', 'loll', 'lleva',
+    'evóa', 'voac', 'oaco', 'cono', 'onoc', 'noce', 'ocer', 'cerel', 'erel', 'elhi',
+    'hiel','ielo',
 ]
 
 # control greedy
@@ -35,7 +134,7 @@ def reconstruccion_optima(n: int, k: int, bloques: list):
     valores = list(range(1, n + 1))
     algoritmo = pyeasyga.GeneticAlgorithm(valores,
                                           population_size=50,
-                                          generations=150,
+                                          generations=100,
                                           crossover_probability=0.8,
                                           mutation_probability=0.2,
                                           elitism=True,
@@ -77,10 +176,6 @@ def mutacion(cromosoma):
 def evaluar(cromosoma, _):
     global longitud_minima
     reconstruida = FRAGMENTOS[cromosoma[0] - 1]
-    contador = {}
-
-    if len(cromosoma)==101:
-        print("STOP")
             
     for idx in range(1, TAMANO):
         actual = FRAGMENTOS[cromosoma[idx] - 1]
