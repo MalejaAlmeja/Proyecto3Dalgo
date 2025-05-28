@@ -151,7 +151,20 @@ for _ in range(ncasos):
     TAMANO = len(subcadenas)
     LONGITUD = k
     rta = reconstruccion_optima(TAMANO, int(k), subcadenas)
-    print(rta[0])
+        
+    texto = FRAGMENTOS[rta[0][0] - 1]
+
+    for idx in range(1, TAMANO):
+        anterior = texto[-LONG:]
+        actual = FRAGMENTOS[rta[0][idx] - 1]
+        anadir = actual
+        for i in range(LONG, 0, -1):
+            if anterior[-i:] == actual[:i]:
+                anadir = actual[i:]
+                break
+        texto += anadir
+        
+    print(texto)
     
 """
 # 
