@@ -108,8 +108,9 @@ def generar_greedy():
     disponibles = list(range(1, TAMANO + 1))
     secuencia = [disponibles.pop(random.randint(0, len(disponibles) - 1))]
 
-    while disponibles:
+    while len(secuencia)<TAMANO: 
         ultimo = FRAGMENTOS[secuencia[-1] - 1]
+        
         siguiente = max(disponibles, key=lambda x: calcular_solape(ultimo, FRAGMENTOS[x - 1]))
         secuencia.append(siguiente)
         disponibles.remove(siguiente)
