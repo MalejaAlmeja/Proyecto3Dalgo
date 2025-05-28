@@ -29,7 +29,7 @@ FRAGMENTOS = [
 
 # control greedy
 generados_greedy = 0
-MAXIMO_GREEDY = round(TAMANO/2)
+MAXIMO_GREEDY = 25
 
 def reconstruccion_optima(n: int, k: int, bloques: list):
     valores = list(range(1, n + 1))
