@@ -109,12 +109,14 @@ def seleccion_ruleta(poblacion):
 
 def generar_greedy():
     added={}
-    secuencia = [random.randint(1, TAMANO)]
+    first=random.randint(0, TAMANO-1)
+    added[first]=0
+    secuencia=[first+1]
 
     while len(secuencia)<TAMANO: 
         ultimo = FRAGMENTOS[secuencia[-1] - 1]
         maxOverlap=-1
-        maxIdx=0
+        maxIdx=-1
         
         for i in range(0, TAMANO-1):
             if i not in added:
@@ -125,11 +127,8 @@ def generar_greedy():
                        
         secuencia.append(maxIdx+1)
         added[maxIdx]=0
-    
-    if len(secuencia)==101:
-        print("STOP")
         
-    return secuencia.copy()
+    return secuencia
 
 def calcular_solape(a, b):
     for i in range(LONG, 0, -1):
