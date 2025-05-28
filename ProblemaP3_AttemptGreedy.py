@@ -29,13 +29,13 @@ FRAGMENTOS = [
 
 # control greedy
 generados_greedy = 0
-MAXIMO_GREEDY = 15
+MAXIMO_GREEDY = TAMANO/2
 
 def reconstruccion_optima(n: int, k: int, bloques: list):
     valores = list(range(1, n + 1))
     algoritmo = pyeasyga.GeneticAlgorithm(valores,
-                                          population_size=100,
-                                          generations=1000,
+                                          population_size=50,
+                                          generations=150,
                                           crossover_probability=0.8,
                                           mutation_probability=0.2,
                                           elitism=True,
